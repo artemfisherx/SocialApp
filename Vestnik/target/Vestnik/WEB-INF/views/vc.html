@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+    body{
+        height: 100vh;      
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 100px 5px 1fr 5px 50px;
+        grid-template-areas:    "header" 
+                                "."
+                                "main"
+                                "."
+                                "footer";   
+        font-family: Arial, Helvetica, sans-serif;  
+        margin:0;
+    }
+
+    p{
+        margin: 0;
+        padding: 0;
+    }
+
+    h1{
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        vertical-align:middle;
+    }
+
+    
+
+    header {
+        background-image: linear-gradient(top, #294292, #4163d4);
+        background-image: -webkit-linear-gradient(top, rgb(246, 188, 117), rgb(244, 196, 138));
+        background-image: -moz-linear-gradient(top, #294292, #4163d4);
+        background-image: -o-linear-gradient(top, #294292, #4163d4);
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+        grid-area: header;      
+        
+    }
+
+    .wrapper{
+        margin: auto;
+        width:max-content;       
+    }
+
+    .wrapper1{
+        display: grid;       
+        margin: auto;
+        width: max-content;
+        grid-template-columns: max-content max-content max-content;
+        grid-template-rows: auto;
+        grid-template-areas: "block_one block_two block_three";
+        margin-bottom: 5px;
+    }
+
+    .wrapper2{
+        display: grid;       
+        margin: auto;
+        width: 100%;
+        grid-template-columns: 1fr max-content 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: ". block_one .";
+        background-color: burlywood;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .color1{
+        background-color: #a9baf1;
+    }
+
+    .color2{
+        background-color: #7fc97e;
+    }
+
+    .color3{
+        background-color: #8d91ad;
+    }
+
+
+    main{        
+        grid-area: main;
+    }
+
+    footer{
+        background-color: rgb(223, 224, 216);
+        grid-area: footer;
+    }
+
+    #logo{
+        display: inline-block;
+        margin:auto;
+        margin-right: 20px;
+        width: auto;
+    }
+
+    #logo a{
+        text-decoration: none;
+        color:#000;
+    }
+
+    #search{
+        display: inline-block;
+        margin:auto;
+        margin-right: 20px;
+        width: 235px;
+    }
+
+    #hometown{
+        display: inline-block;
+        margin:auto;
+        width: auto;
+    }
+
+    #news_ria{
+        padding-inline-start: 0;
+        grid-area: block_two; 
+        margin-left: 50px;
+        margin-right: 50px;        
+
+        display: grid;
+        grid-template-columns: max-content max-content;
+        grid-template-rows: auto;
+        grid-template-areas: "ria_main ria_items";
+        background-color:bisque;
+    }
+
+    #news_ria ul{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    #news_ria_main{
+        grid-area: ria_main;
+        margin-right: 20px;
+        padding: 10px;
+        width: 400px;
+    }
+
+    #news_ria_main a{
+        text-decoration: none;
+        color:#000;
+    }
+
+    #news_ria_main img{
+        width: 400px;
+        height: 400px;
+    }
+
+    #news_ria_items{
+        padding: 10px;
+        grid-area: ria_items;
+        width: 200px;     
+    }
+
+    #news_ria_items ul li{
+        margin-bottom: 5px;
+    }
+
+    #news_ria_items ul li a{
+        text-decoration: none;
+        color:black;
+    }
+
+    .news_text{
+        margin-bottom: 10px;
+    }
+    
+    .news_date{
+        margin-top: 20px;
+        font-size: smaller;
+    }
+
+    .another_news{
+        font-style: italic;
+        margin-top: 15px;
+        color:#2c2a2a
+    }
+    .another_news a{
+        color:#694a3a !important;
+    }
+
+    #horoscope{
+        grid-area: block_three;      
+        padding: 10px;
+        width: 230px;
+    }
+
+    #horo_sign{
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-size: larger;
+        border: 0;
+    }
+
+    #today{ 
+        grid-area: block_one;  
+        margin-right: 20px;
+        padding: 10px;
+        width: 250px;
+    }
+
+    #date{
+        font-family:Verdana, Geneva, Tahoma, sans-serif;
+        font-weight: 100;
+        font-size: larger;
+        margin-bottom: 3px;
+    }
+
+    #in_this_day{
+        font-style: italic;
+    }
+
+    #news_starhit{
+        grid-area: block_one;       
+    }
+
+    #articles_vc{
+        grid-area: block_three;       
+    }
+
+    .news_starhit_item{
+        width: 200px;
+    }
+
+    .news_starhit_item, .articles_vc_item{
+       margin: 5px;
+       margin-bottom: 20px;
+    }    
+
+    .news_starhit_item img, .articles_vc_item img{
+        width: 200px;
+        height: 200px;
+    }
+
+    .news_starhit_item a{
+        font-size: small;
+        text-decoration: none;
+        color: #000;
+    }
+
+    
+
+    #video_rutube{
+        display: grid;
+        grid-template-columns: max-content max-content max-content;
+    }
+
+    #video_rutube{
+        width: 1fr max-content 1fr;
+        margin: auto;       
+        grid-area: block_one;
+    }
+
+    .video_rutube_item{
+        margin: 5px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 60px 1fr 60px; 
+        width: 200px;        
+    }
+    .video_rutube_item .main_image{
+        width: 200px;
+        height: 200px;
+        grid-row: 1/4;
+        grid-column: 1/4;
+    }
+
+    .video_rutube_item .duration{      
+        grid-row: 1/2;
+        grid-column: 1/2;
+        z-index: 1;
+        padding: 5px 0 0 5px;     
+    }
+
+    .video_rutube_item .duration .dur_wrapper{
+        background-color: black;
+        opacity: 0.7;
+        width: max-content;
+        padding: 1px;
+    }
+
+    .video_rutube_item .duration .dur_wrapper p{
+        color: white;
+    }
+
+    .video_rutube_item .play{      
+        grid-row: 2/3;
+        grid-column: 2/3;
+        z-index: 1;    
+    }
+
+    .video_rutube_item .play:hover{
+        cursor: pointer;
+    }
+
+    .video_rutube_item .caption{
+        grid-row: 3/4;
+        grid-column: 1/4;
+        width: 200px;
+        overflow: hidden;  
+        background-color: black;
+        opacity: 0.7;    
+    }
+
+    .video_rutube_item .caption p{
+        font-size: small;
+        color:white;
+        text-align: center;
+    }
+
+    .articles_vc_item{
+        width: 200px;
+    }
+
+    .articles_vc_item a{
+        font-size: small;
+        text-decoration: none;
+        color: #000;
+    }
+    
+    footer{
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-areas: ". footer_menu .";
+    }
+
+    footer ul{
+        list-style-type: none;
+        grid-area: footer_menu;             
+    }
+
+    footer ul li{
+        display: inline-block;
+    }
+
+    footer ul li a{
+        text-decoration: none;
+        color:#000;
+    }
+
+
+
+</style>
+
+</head>
+
+<body>
+    <header>
+        <div class="wrapper">
+            <div id="logo"><a th:href="@{/}"><h1>Vestnik</h1></a></div>
+            <div id="search">
+                <form>
+                    <input type="search" name="search_text"/>
+                    <input type="submit" name="search_start" th:value="#{search_start}"/>
+                </form>
+            </div>
+            <div id="hometown">
+                <p>Moscow</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="wrapper1">  
+            <div id="news_starhit" th:if="${starhitNews.size()>2}">
+                <div class="news_starhit_item">
+                    <img th:src="${starhitNews.get(0).img}"/>   
+                    <a th:href="@{'/starhit/'+ ${starhitNews.get(0).id}}" th:text="${starhitNews.get(0).title}"></a>             
+                </div>
+                <div class="news_starhit_item">
+                    <img th:src="${starhitNews.get(1).img}"/>   
+                    <a th:href="@{'/starhit/'+ ${starhitNews.get(1).id}}" th:text="${starhitNews.get(1).title}"></a>             
+                </div>  
+                <div class="news_starhit_item">
+                    <img th:src="${starhitNews.get(2).img}"/>   
+                    <a th:href="@{'/starhit/'+ ${starhitNews.get(2).id}}" th:text="${starhitNews.get(2).title}"></a>             
+                </div>                    
+            </div>          
+            <div id="news_ria">
+                <div id="news_ria_main">                    
+                    <h2 th:text="${article.title}"></h2>
+                    <p class="news_text" th:utext="${article.text}"/>
+                    <p class="news_date" th:text="${{article.dt}}"></p>                    
+                </div>
+                <div id="news_ria_items" th:if="${vcArticles.size()>4}">
+                    <ul>
+                        <li><a th:href="@{'/vc/'+${vcArticles.get(0).id}}" th:text="${vcArticles.get(0).title}"></a></li>
+                        <li><a th:href="@{'/vc/'+${vcArticles.get(1).id}}" th:text="${vcArticles.get(1).title}"></a></li>
+                        <li><a th:href="@{'/vc/'+${vcArticles.get(2).id}}" th:text="${vcArticles.get(2).title}"></a></li>
+                        <li><a th:href="@{'/vc/'+${vcArticles.get(3).id}}" th:text="${vcArticles.get(3).title}"></a></li>
+                        <li><a th:href="@{'/vc/'+${vcArticles.get(4).id}}" th:text="${vcArticles.get(4).title}"></a></li>                                             
+                        <li class="another_news"><a th:href="@{/another_vc}" th:text="#{another_ria}"></a></li>                    
+                    </ul>
+                </div>
+            </div>
+            <div id="articles_vc" th:if="${riaNews.size()>0}">
+                <div class="articles_vc_item" th:each="item : ${riaNews}">
+                    <!-- <img th:src="${vcArticles.get(0).img}"> -->
+                    <a th:href="@{'/ria/'+${item.id}}" th:text="${item.title}"></a>
+                </div>                                                            
+            </div> 
+        </div>       
+        <div class="wrapper2 color2" th:if="${videos.size()>0}">        
+            <div id="video_rutube">
+                <div class="video_rutube_item" th:each="video : ${videos}">
+                    <img th:src="${video.img}" class="main_image"/>
+                    <div class="duration"><div class="dur_wrapper"><p th:text="${video.duration}"></p></div></div>  
+                    <div class="play"><a th:href="@{'/videos/'+ ${video.id}}"><img th:src="@{/images/play.png}"></a></div> 
+                    <div class="caption"><p th:text="${video.name}"></p></div>            
+                </div>                   
+            </div>
+        </div>       
+    </main>
+
+    <footer>   
+        <ul>
+            <li><a href="">About</a></li>
+            <li><a href="">Github</a></li>
+            <li><a href="">Contact</a></li>
+        </ul>     
+    </footer>
+
+</body>
+
+
+</html>
