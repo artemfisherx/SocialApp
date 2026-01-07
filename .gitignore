@@ -35,3 +35,4 @@ build/
 ### LOGS
 *.tmp
 *.gz
+*.log
