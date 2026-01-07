@@ -1,0 +1,81 @@
+
+<title th:text="#{friends_title}">Profile</title>
+
+<script th:inline="javascript">
+function acceptFriendRequest(userId)
+{		
+	var data = {"from":userId, "_csrf":[[${_csrf.token}]]};		
+	$.post("/profile/acceptfrequest", data);
+}
+
+function cancelFriendRequest(userId)
+{	
+	var data = {"to":userId, "_csrf":[[${_csrf.token}]]};			
+	$.post("/profile/cancelfrequest", data);	
+	
+}
+
+function deleteFromFriends(userId)
+{
+	var data = {"friend":userId,"_csrf":[[${_csrf.token}]]};	
+	$.post("/profile/deletefriend", data);
+}
+
+
+$(document).ready(function(){	
+	 
+	$(".friend").on('click', 'a', function(event){
+		
+		var element = $(this);
+		var buttonClass = element.attr("class");
+		var userId = element.data("user-id");
+		
+		if(buttonClass=="accept_friend_request")
+			acceptFriendRequest(userId);
+		
+		if(buttonClass=="cancel_friend_request")
+			cancelFriendRequest(userId);		
+		
+		if(buttonClass=="delete_friend")
+			deleteFromFriends(userId);		
+		
+		window.location.reload();
+		
+	});
+	
+	
+});
+</script>
+
+
+<div id="content" th:replace="~{typical::typical(~{::title}, ~{::section}, ~{::script})}"> 
+	<section>
+		 <div id="actions" th:if="${requests.size()>0}" th:each="request : ${requests}">
+		 	<p th:text="#{friends_requests}"/> 
+		 	<p th:if="${request.fromId!=userId}" class="friend">
+		 		<span th:text="${request.fromName}"/>
+				<a href="" class="accept_friend_request" th:data-user-id="${request.fromId}"  th:text="#{profile_accept_friend_request}" />
+				<a href="" class="cancel_friend_request" th:data-user-id="${request.fromId}" th:text="#{profile_cancel_friend_request}" />
+           	</p>
+           	
+		 	<p th:if="${request.fromId==userId}" class="friend">	
+		 		<span th:text="${request.toName}"/>				
+				<a href="" class="cancel_friend_request" th:data-user-id="${request.toId}" th:text="#{profile_cancel_friend_request}" />
+            </p>                        
+         </div> 
+         <div>
+         	<p th:text="#{friends_list}"/>
+         	<th:block th:each="friend : ${friends}">
+	         	<p class="friend">	
+			 		<a th:href="@{'/profile/' + ${friend.id}}"><span th:text="${friend.name}"></span></a>			
+					<a href="" class="delete_friend" th:data-user-id="${friend.id}" th:text="#{friends_delete_friend}"></a>
+	            </p>
+            </th:block>
+         </div>       
+	</section>
+</div>
+
+   
+
+
+

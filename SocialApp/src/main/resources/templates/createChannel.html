@@ -1,0 +1,20 @@
+		<title th:text="#{channels_title}"></title>
+        
+        
+        <div id="content" class="pattern_padding" th:replace="~{typical::typical(~{::title}, ~{::section}, _)}"> 
+        <section>
+        	<form method="post" th:action="@{/channels/create}" th:object="${channel}" id="reg_form">
+        	
+	        	<label th:text="#{channel_title}">Channel title</label>
+	            <input type="text" th:field="*{title}" required maxlength="20"/>
+	            <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="register_input_error"/>
+	
+				<label th:text="#{channel_descr}">Description</label>
+				<textarea rows="5" th:field="*{description}" maxlength="150" required></textarea>
+	            <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="register_input_error"/>
+	            
+	            <input type="submit" name="go" th:value="#{channel_create}" class="actions_button"/>
+            
+            </form>
+      </section>
+      </div>

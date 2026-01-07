@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title th:text="#{profile_title}">Profile</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+
+<script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+
+<script type="text/javascript" th:src="@{/mywebauthn.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+<!--
+const ui = {
+				getRegisterButton: function() {	
+					return document.getElementById('register')
+				},
+			getSuccess: function() {
+					return document.getElementById('success')
+				},
+			getError: function() {
+					return document.getElementById('error')
+				},
+			getLabelInput: function() {
+					return document.getElementById('label')
+				},
+			getDeleteForms: function() {
+					return Array.from(document.getElementsByClassName("delete-form"))
+				},
+			}
+document.addEventListener("DOMContentLoaded",() => setupRegistration({"X-CSRF-TOKEN" : [[${_csrf.token}]]}, "", ui));
+//-->
+</script>
+<script th:inline="javascript">
+$(document).ready(function(){
+
+	$("#logout").on('click' ,function(event){
+		event.preventDefault();	
+		
+		$.post("/logout", {"_csrf":[[${_csrf.token}]]} , function(){
+			window.location.replace("/");			
+		});
+	});
+	
+	$(".remove_session_button").on('click' ,function(event){
+		
+		var id = $(this).data("session-id");
+		
+		$.post("/settings/removesession", {"sessionId":id, "_csrf":[[${_csrf.token}]]} , function(){
+			$(this).parent().remove();		
+		})
+	});
+	
+	$("#save_login").on('click' ,function(event){
+		
+		var login = $("#login").val();
+		
+		$.post("/settings/savelogin", {"login":login, "_csrf":[[${_csrf.token}]]} , function(){
+			window.location.reload();			
+		})
+	});
+	
+	$(".unblock_user").on('click' ,function(event){
+		
+		var userId = $(this).data("user-id");		
+		
+		$.post("/settings/unblockuser", {"userId":userId, "_csrf":[[${_csrf.token}]]} , function(){
+			$()			
+		})
+	});
+
+});
+</script>
+
+</head>
+
+<body>
+    <header>
+        <div id="notice">
+            <a th:href="@{/offer}" th:text="#{offer}"></a>            
+        </div>
+        <h1><a th:href="@{/}">Social Network (pet-project)</a></h1>
+        <div id="search_box">
+            <a href="?lang=ru" th:unless="${#locale.getLanguage().equals('ru')}">RU</a>
+            <a href="?lang=ru" class="active_lang" th:if="${#locale.getLanguage().equals('ru')}">RU</a> 
+            
+            <a href="?lang=en" th:unless="${#locale.getLanguage().equals('en')}">EN</a>
+            <a href="?lang=en" class="active_lang" th:if="${#locale.getLanguage().equals('en')}">EN</a>
+            
+            <form>
+                <input type="search" id="search_text" th:placeholder="#{search_placeholder}" required/>
+                <input type="submit" id="search_button" th:value="#{search_start}">
+            </form>
+        </div>
+    </header>
+    <main>
+        <div id="left_bar">
+            <ul>
+                <li><a th:href="@{/profile/}" th:text="#{profile_menu_mypage}">My page</a></li>
+                <li><a th:href="@{/news}" th:text="#{profile_menu_news}">News</a></li>
+                <li><a th:href="@{/friends}" th:text="#{profile_menu_friends}">Friends</a></li>
+                <li><a th:href="@{/messages}" th:text="#{profile_menu_messages}">Messages</a></li>
+                <li><a th:href="@{/channels}" th:text="#{profile_menu_channels}">Channels</a></li>                
+                <li><a th:href="@{/photos}" th:text="#{profile_menu_photos}">My photos</a></li>               
+                <li><a th:href="@{/settings}" th:text="#{profile_menu_settings}">Settings</a></li>
+                <li id="exit_item"><a href="/logout" id="logout" th:text="#{profile_menu_exit}">Exit</a></li>
+            </ul>
+        </div>
+        <div id="content"> 
+        
+        <div>
+        <p th:text="#{settings_login}"></p>
+        <input type="text" name="login" id="login" th:value="${login}"/>
+        <input type="button" id="save_login" th:value="#{settings_save}"/>
+        </div>
+        
+        <div>
+        <p th:text="#{settings_privacy_title}"></p>
+        <form th:object="${privacy}" th:action="@{/settings/saveprivacy}" method="post">
+        	<div>
+        	<span th:text="#{settings_privacy_birthdate}"></span>
+	        	<select th:field="*{birthDate}">
+	        		<option value="All" th:text="#{settings_privacy_all}"/>
+	        		<option value="Friends" th:text="#{settings_privacy_friends}"/>
+	        	</select>
+        	</div>
+        	<div>
+	        	<span th:text="#{settings_privacy_maritalstatus}"></span>
+	        	<select th:field="*{maritalStatus}">
+	        		<option value="All" th:text="#{settings_privacy_all}"/>
+	        		<option value="Friends" th:text="#{settings_privacy_friends}"/>
+	        	</select>
+        	</div>
+        	<div>
+        		<span th:text="#{settings_privacy_phone}"></span>
+	        	<select th:field="*{phone}">
+	        		<option value="All" th:text="#{settings_privacy_all}"/>
+	        		<option value="Friends" th:text="#{settings_privacy_friends}"/>
+	        	</select>
+	        </div>
+	        <div>
+	        	<span th:text="#{settings_privacy_about}"></span>
+	        	<select th:field="*{about}">
+	        		<option value="All" th:text="#{settings_privacy_all}"/>
+	        		<option value="Friends" th:text="#{settings_privacy_friends}"/>
+	        	</select>
+        	</div>
+        	<input type="submit" th:value="#{settings_save}" />
+        </form>
+        </div>
+        
+        <div th:if="${blockedUsers.size()>0}" th:each="blockedUser : ${blockedUsers}">
+        	<p th:text="#{settings_blocked_users_title}"></p>
+        	<ul>
+        		<li>
+        			<span th:text="${blockedUser.name} + ' ' + ${blockedUser.surname}"></span>
+        			<a href="" class="unblock_user" th:data-user-id="${blockedUser.id}" th:text="#{settings_unblock_user}"></a>
+        		</li>
+        	</ul>
+        </div>
+        
+        <div>
+        	<span th:text="#{settings_privacy_passkey}"></span>
+	        <form class="default-form" method="post" action="#" onclick="return false">
+				<div id="success" class="alert alert-success" role="alert">Success!</div>
+				<div id="error" class="alert alert-danger" role="alert"></div>
+				<p>
+					<label for="label" class="screenreader">Passkey Label</label>
+					<input type="text" id="label" name="label" placeholder="Passkey Label" required autofocus>
+				</p>
+				<button id="register" class="primary" type="submit">Register</button>
+			</form>
+			<table class="table table-striped">
+				<thead>
+					<tr class="table-header">
+						<th>Label</th>
+						<th>Created</th>
+						<th>Last Used</th>
+						<th>Signature Count</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="cr:${credentials}">
+						<td th:text="${cr.label}"></td>
+						<td th:text="${cr.created}"></td>
+						<td th:text="${cr.lastUsed}"></td>
+						<td th:text="${cr.signatureCount}"></td>
+						<td>
+							<form class="delete-form no-margin" method="post" th:action="@{'/webauthn/register/'+ ${cr.credentialId.toBase64UrlString}}">
+								<input type="hidden" name="method" value="delete">							
+								<button class="primary small" type="submit">Delete</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		<div>
+			<span th:text="#{settings_privacy_active_sessions}"></span>
+			<ul>
+				<li th:each="s:${sessions}">
+					<span th:text="${s.ip} + ' ' + #{settings_current_session}" th:if="${s.getSessionId()==currentSession.id}"/>
+					<span th:text="${s.ip}" th:unless="${s.getSessionId()==currentSession.id}"/>
+					
+					<button th:text="#{settings_remove_session}" th:data-session-id="${s.getSessionId()}" class="remove_session_button"></button>				
+				</li>						
+			</ul> 
+		</div>
+		
+        </div>
+    </main>
+    <footer>        
+        <ul>
+            <li><a th:href="@{/about}" th:text="#{profile_footer_about}">About</a></li>
+            <li><a th:href="@{/github}" th:text="#{profile_footer_github}">Github</a></li>
+            <li><a th:href="@{/projects}" th:text="#{profile_footer_projects}">Other projects</a></li>
+            <li><a th:href="@{/contacts}" th:text="#{profile_footer_contacts}">Contacts</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
+

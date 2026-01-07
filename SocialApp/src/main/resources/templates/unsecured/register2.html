@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title th:text="#{register_step2}">Register. Step 2</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+
+</head>
+
+
+<body>
+    <header>
+        <div id="notice">
+            <a th:href="@{/offer}" th:text="#{offer}">I'm looking for a job. Do you have a offer? If you see this, then it's still relevant.</a>
+        </div>
+        <h1><a th:href="@{/}">Social Network (pet-project)</a></h1>
+        <div id="search_box">
+            <a href="?lang=ru" th:unless="${#locale.getLanguage().equals('ru')}">RU</a>
+            <a href="?lang=ru" class="active_lang" th:if="${#locale.getLanguage().equals('ru')}">RU</a>   
+            
+            <a href="?lang=en" th:unless="${#locale.getLanguage().equals('en')}">EN</a>
+            <a href="?lang=en" class="active_lang" th:if="${#locale.getLanguage().equals('en')}">EN</a>
+        </div>
+    </header>
+    <main class="login_main">
+        <div id="content" class="login_content">
+            <div id="reg_form">
+                <form method="post" th:object="${regForm}" th:action="@{/reg/register2}" enctype="multipart/form-data">                
+                    <label th:text="#{register_phone}">Phone number</label>
+                    <input type="text" th:field="*{phone}" required maxlength="20" placeholder="#-###-###-##-##"
+                         pattern="[0-9]{1}-[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"/> 
+                    <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="register_input_error"/>   
+                         
+                    <label th:text="#{register_country}">Country</label>
+                    <input type="text" th:field="*{country}" required maxlength="20"/>
+                    <p th:if="${#fields.hasErrors('country')}" th:errors="*{country}" class="register_input_error"/>
+
+                    <label th:text="#{register_city}">City</label>
+                    <input type="text" th:field="*{city}" required maxlength="20"/>
+                    <p th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="register_input_error"/>
+
+                    <label th:text="#{register_about_me}">About me</label>
+                    <textarea rows="5" th:field="*{about}" maxlength="150" required></textarea>
+                    <p th:if="${#fields.hasErrors('about')}" th:errors="*{about}" class="register_input_error"/>
+
+                    <label th:text="#{register_photo}">My photo</label>
+                    <input type="file" th:field="*{image}" accept="image/*"> 
+                    <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}" class="register_input_error"/>                   
+                    
+                    <input type="submit" name="go" th:value="#{register_finish}" class="actions_button"/>
+                </form>     
+            </div> 
+                
+        </div>
+    </main>
+    <footer>        
+        <ul>
+            <li><a th:href="@{/about}" th:text="#{profile_footer_about}">About</a></li>
+            <li><a th:href="@{/github}" th:text="#{profile_footer_github}">Github</a></li>
+            <li><a th:href="@{/projects}" th:text="#{profile_footer_projects}">Other projects</a></li>
+            <li><a th:href="@{/contacts}" th:text="#{profile_footer_contacts}">Contacts</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
+

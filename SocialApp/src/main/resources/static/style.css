@@ -1,0 +1,429 @@
+html, body, ul
+{
+    padding: 0;
+    border: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    box-sizing: content-box;
+}
+
+h1,h2,h3,h4,h5,h6,p {
+    margin: 1px;
+}
+
+h1 a {
+	text-decoration:none;
+	color:#000;	
+}
+
+body{
+    display: grid;
+    grid-template-rows:120px 1fr 100px;
+    background-color: #e7e8ea; 
+    min-height: 100vh;
+}
+
+
+/* header style */
+
+header
+{
+    display:grid;
+    grid-template-rows: 3;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;   
+    background-image: -webkit-linear-gradient(top,white,#4f89ed 50%);
+    background-image: -moz-linear-gradient(top,white,#4f89ed 50%);
+    background-image: -o-linear-gradient(top,white,#4f89ed 50%);
+}
+
+header #notice{
+    background-color: rgb(233, 196, 10);
+    text-align: center;
+}
+
+header h1 {
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+header #search_box{
+    display: grid;    
+    grid-template-columns: auto auto auto;
+    margin: 10px auto 10px;
+}
+
+header #search_box a{
+    text-decoration: none;
+    margin-right: 5px;
+    color: #e7e8ea;
+}
+header #search_box a.active_lang{
+    color: #191997;
+    font-weight:bold;
+    text-decoration:underline;
+}
+
+header #search_box #search_text{
+    width: 250px;
+    height: 20px;
+}
+
+header #search_button
+{
+    width:80px;
+    height: 20px;
+    background-color: #d2d4d7 ;
+    border-width: 1px;
+    border-color: #364793;
+}
+
+
+
+/* main style */
+
+main{
+    display: grid;
+    grid-template-columns: auto 200px 600px auto;
+    padding-bottom:20px;
+}
+
+#left_bar{
+    grid-column-start: 2;
+    grid-column-end: 3;   
+}
+
+#left_bar ul
+{
+    margin-top: 20px;
+    list-style-type: none;    
+    height: 100%;
+}
+
+#left_bar ul li
+{
+    display: block;
+    height:2em;  
+    text-align:left;    
+    padding-left:50px;
+    padding-top: 0.6em;
+    
+}
+
+#exit_item a
+{
+    color:#9f4e4e !important;
+}
+
+#left_bar ul li:hover
+{
+    background-color: #d8dadf;
+}
+
+#left_bar ul li a{   
+    text-decoration: none;
+    color:#000;    
+}
+
+#content{      
+    grid-column-start: 3;
+    grid-column-end: 4;
+    padding-top:20px;
+}
+
+#content label, #content input{
+    display: block;
+}
+
+#content input{
+    margin-bottom: 10px;
+}
+
+#content #photo_info #photo img
+{
+    width: 200px;
+    height: 300px;
+}
+
+#content #photo_info #info #actions{
+    margin-top: 10px;
+}
+
+#content #photo_info #info #actions .actions_button
+{
+    width: 100%;
+    height:30px;
+    background-color: #4f89ed;
+    border-radius: 5px;
+    border:0;
+}
+
+.actions_button
+{
+    width: 188px !important;
+    height:30px;
+    background-color: #4f89ed;
+    border-radius: 5px;
+    border:0;
+}
+
+.actions_button:hover
+{
+    cursor: pointer;
+}
+
+#photo_info{
+    display: flex; 
+    gap:20px;
+}
+
+#myphotos, #myvideos
+{
+    margin-top: 20px;
+}
+
+.dirtitle
+{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:18px;
+    color:#191997;    
+}
+
+#myphotos_container, #myvideos_container{
+    display: flex;
+    justify-content: space-between;
+    gap:10px;
+
+}
+
+.myphoto img, .myvideo img
+{
+    width: 100px;
+    height: 100px;
+}
+
+#wall
+{
+    margin-top: 20px;
+}
+
+#wall_form
+{
+    margin-bottom: 20px;
+}
+
+#wall_form textarea
+{
+    width:100%;
+    resize: none;    
+}
+
+#wall_form #wall_input_file
+{
+    margin-bottom: 2px;
+}
+
+.wall_item
+{
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wall_item .author{
+    text-decoration: none;
+    color:#154597;
+}
+
+.wall_item .author:hover{
+    text-decoration: underline;
+}
+
+.wall_item .delete, .see_all a, .delete_photo a
+{
+    margin-top: 2px;
+    text-decoration: none;
+    color:#8e8f92;
+    font-size: 12px;
+}
+
+.wall_item .delete:hover, .see_all a:hover{
+    text-decoration: underline;
+}
+
+.wall_item img
+{
+    margin-top: 5px;
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.wall_item_text
+{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    margin-left: 0;
+}
+
+.wall_item_date
+{
+    font-size: 12px;
+    color:#8e8f92;
+    margin-left: 0;    
+}
+
+
+/* footer style */
+footer{ 
+    background-color: #8e8f92;
+    display: grid;
+    grid-template-columns: 3;
+}
+
+footer ul
+{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin: auto 0;
+    list-style-type: none;  
+}
+
+footer ul li{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+footer ul li a{
+    text-decoration: none;
+    color:#cecfd1;
+}
+
+footer ul li a:hover{
+    text-decoration: underline;
+}
+
+footer #year{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    color:#cecfd1;
+    padding: auto;
+}
+
+/*login page*/
+.login_main{      
+    grid-template-columns: auto 600px auto !important;   
+}
+
+.login_content{
+    grid-column-start: 2 !important;
+    grid-column-end: 3 !important;
+    padding: auto;
+}
+
+.login_content div{
+    margin: auto;
+    width: 200px;
+}
+
+.login_content div:first-of-type
+{
+    margin-top: 10px;
+}
+
+.login_content div:last-of-type
+{
+    margin-top: 10px;
+    margin-bottom: 20px; 
+}
+
+#auth_form input{
+    width: 180px;
+}
+
+#auth_form .index_reg{
+	text-align:center;
+	display:block;
+	margin:0 auto;
+}
+
+/* register1 */
+#reg_form{
+    width:180px;
+}
+
+#reg_form label
+{
+	margin-top:10px;
+}
+
+
+
+#reg_form input[type="radio"] {
+    display: inline-block;
+    width: 10px;
+    margin-right: 5px;
+}
+
+#reg_form input, #reg_form textarea{
+    width:180px;
+    margin-bottom:0;
+}
+
+#reg_form textarea{
+    resize: none;
+}
+
+#reg_form input[type=submit]
+{
+	margin-top:10px;
+}
+
+#reg_form .inline-block
+{
+	display:inline-block;
+}
+
+.register_input_error{
+	color: #f00;
+	font-size:10px;
+}
+
+
+/*pattern */
+.pattern_padding{
+	padding-top:30px;
+}
+
+/*photos page*/
+.delete_photo{
+	text-align:center;	
+	font-size:12px;
+}
+
+#photos_container{
+	display:grid;
+	grid-template-columns:auto auto auto auto;
+	grid-row-gap:15px;
+}
+
+#photos_container .myphoto{
+	border-width:1px;
+	border-color:#000;
+}
+
+#photos_container .myphoto img{
+	display:block;
+	margin:auto;
+}
+
+.error{
+	color:#f00;
+	margin:5px 0;
+}
+
+/* index */
+#passkey-signin{
+	margin-bottom:10px;
+}
+

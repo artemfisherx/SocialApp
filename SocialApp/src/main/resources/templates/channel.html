@@ -1,0 +1,172 @@
+
+<title th:text="#{profile_title}">Profile</title>
+
+<script th:inline="javascript">
+$(document).ready(function(){	
+	 
+	var files;	 	
+	 
+	$('input[type=file]').change(function(){		
+	    files = this.files;
+	});
+	
+	$(".delete").on('click', function(event){
+		event.preventDefault();	
+		
+		var element = $(this);
+		var msgId = element.data("message-id");	
+		var channelId = element.data("channel-id");
+		
+		var msg = {"id":msgId, "_csrf":[[${_csrf.token}]], "channelId" : channelId};
+		
+		$.post('/channels/deletechannelwallmessage', msg, function(){
+			
+			element.parent().remove();	
+			
+		});
+	
+	});
+	
+	$("#channel_remove").on('click', function(){
+		var channelId = $("#channel").val();
+		var msg = {"channelId":channelId, "_csrf":[[${_csrf.token}]]};
+		
+		$.post("/channels/removechannel", msg, function(){
+			window.location.replace('/channels');
+			
+		});
+
+	});
+	
+	$("#channel_subscribe").on('click', function(){
+		var channelId = $("#channel").val();
+		var msg = {"channelId":channelId, "_csrf":[[${_csrf.token}]]};
+		
+		$.post("/channels/subscribe", msg, function(){
+			window.location.replace('/channels/' + channelId);
+			
+		});
+		
+	});
+	
+	$("#channel_unsubscribe").on('click', function(){
+		var channelId = $("#channel").val();
+		var msg = {"channelId":channelId, "_csrf":[[${_csrf.token}]]};
+		
+		$.post("/channels/unsubscribe", msg, function(){
+			window.location.replace('/channels/');
+			
+		});
+		
+	});
+	
+	
+	$("#wall_form_message").on('submit', function(event){	
+		event.preventDefault();	
+		
+		if($("#text").val().length==0 && $("#image").size==0)
+			return;			
+		
+		var data = new FormData();
+	    $.each( files, function( key, value ){
+	        data.append( key, value );
+	    });
+	    data.append("text", $("#text").val());
+	    data.append("_csrf", [[${_csrf.token}]])
+	    data.append("receiver", $("#receiver").val())
+	    
+	    
+	    $.ajax({
+	        url: '/channels/postchannelwallmessage',
+	        type: 'POST',
+	        data: data,
+	        cache: false,
+	        dataType: 'json',
+	        processData: false, // Не обрабатываем файлы (Don't process the files)
+	        contentType: false, // Так jQuery скажет серверу что это строковой запрос
+	        success: function( msg, textStatus, jqXHR ){
+	 
+	            // Если все ОК
+	 
+	            if( typeof msg.error === 'undefined' ){	                
+	 
+	            	var response = 
+	        			'<div class="wall_item">'   
+	                       + '<p><a href="/profile/'+ msg.senderId +'" class="author">' + msg.senderName + '</a> <span class="wall_item_date">' +  msg.dt + '</span></p>'              
+	                       + '<p class="wall_item_text">'+ msg.text + '</p>'
+	                       + '<img th:src="@{\'/uploads/\'' + msg.imagePath + '}"/>'
+	                       + '<a th:href="@{?del_wall_message=' + msg.id + '}" class="delete" th:text="#{profile_delete_message}">delete this message</a>'                                         
+	                    +'</div>'; 
+	        			
+	        			$("#wall_form").after(response);
+	        			
+	        			$("#text").val('');
+	        			$("#image").val('');
+	        			
+	        			
+	            }
+	            else{
+	                console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );
+	            }
+	        },
+	        error: function( jqXHR, textStatus, errorThrown ){
+	            console.log('ОШИБКИ AJAX запроса: ' + textStatus );	           
+	        }
+	    });		
+
+	});
+	
+	
+});
+</script>
+
+
+
+        <div id="content" th:replace="~{typical::typical(~{::title}, ~{::section}, ~{::script})}"> 
+        <section>
+            <div id="photo_info">                
+                <div id="info">
+                    <h2 th:text="${channel.title}">Ivan Ivanov</h2>                                     
+                    <p th:text="${channel.description}"></p> 
+                    <p><span th:text="#{channel_owner}"></span>
+                    	<a th:href="@{'/profile/' + ${channel.owner.id}}" th:text="${channel.owner.name} + ' ' + ${channel.owner.surname}"></a>
+                    	<span th:if="${channel.owner.id==userId}" th:text="#{channel_its_you}"></span>
+                    </p>
+                    <div id="actions">
+	                    <input type="hidden" id="channel" name="channel" th:value="${channel.id}">
+	                    <input th:if="${channel.owner.id!=userId&&!isSubscriber}" type="button" id="channel_subscribe" th:value="#{channel_subscribe}" class="actions_button"/> 	                   	
+	                    <input th:if="${channel.owner.id!=userId&&isSubscriber}" type="button" id="channel_unsubscribe" th:value="#{channel_unsubscribe}" class="actions_button"/> 
+	                    <input th:if="${channel.owner.id==userId}" type="button" id="channel_remove" th:value="#{channel_remove}" class="actions_button"/>
+	                    </form>                        
+                    </div>
+                </div>
+            </div>  
+            <div id="wall">
+                <p class="dirtitle" th:text="#{profile_wall}">My wall</p>
+                <div id="wall_form">  
+                    <form id="wall_form_message" enctype="multipart/form-data" method="post" th:object="${message}">
+                        <textarea maxlength="200" rows="3"  th:field="*{text}"></textarea>
+                        <input type="file"  accept="image/*" th:field="*{image}">
+                        <input type="hidden" th:field="*{receiver}">
+                        <input type="submit" th:value="#{profile_wall_send}" id="wall_input_send"/>
+                    </form>
+                </div>
+                
+                
+                <div class="wall_item" th:each="message : ${wallMessages}">     
+                    <p><a th:href="@{'/profile/' + ${message.senderId}}" class="author" th:text="${message.senderName}">Mike Tyson</a> <span class="wall_item_date" th:text="${message.dt}"> 16:01 25.07.2024</span></p>              
+                    <p class="wall_item_text" th:text="${message.text}">Some text</p>                    
+                    <a th:href="@{'?del_wall_message=' + ${message.id}}" th:data-message-id="${message.id}" th:data-channel-id="${channelId}" class="delete" th:text="#{profile_delete_message}">delete this message</a>                                        
+                </div>
+                
+                
+                
+               
+            </div>
+            </section>
+        </div>
+
+   
+
+
+

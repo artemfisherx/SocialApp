@@ -1,0 +1,21 @@
+		<title th:text="#{photos_title}">My photos</title>
+        
+        
+        <div id="content" class="pattern_padding" th:replace="~{typical::typical(~{::title}, ~{::section}, _)}"> 
+        <section>
+        	<div class="error" th:if="${param.sizeover}"><p th:text="#{size_over}"></p></div>
+        	<form action="/addphotos" method="post" enctype="multipart/form-data">
+        	<input type="file" name="files" multiple/>
+        	<input type="submit"/>
+        	</form> 
+        	                     
+            <div id="photos_container">
+            	<div class="myphoto" th:each="photo, stat : ${photos}">
+                	<a th:href="@{'/uploads/' + ${photo.path}}" data-lightbox="gallery">
+                		<img th:src="@{'/uploads/' + ${photo.path}}">
+                	</a>
+                	<p class="delete_photo"><a th:href="@{'?delete_photo='+ ${photo.id}}" th:data-photo-id="${photo.id}" th:text="#{delete_photo}">Delete photo</a></p>
+                </div>             
+            </div>
+      </section>
+      </div>

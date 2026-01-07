@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title th:text="#{profile_title}">Profile</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+
+<script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+<link th:href="@{/lightbox/css/lightbox.css}" rel="stylesheet"/>
+<script th:src="@{/lightbox/js/lightbox.js}"></script>
+
+<script th:inline="javascript">
+function addToFriends(element, userId)
+{		
+	var data = {"to":userId, "_csrf":[[${_csrf.token}]]};
+	var text = [[#{profile_cancel_friend_request}]];	
+	$.post("/profile/frequest", data, function(){			
+		element.replaceWith('<input type="button" id="cancel_friend_request" data-user-id="' + userId +'" value="'+ text + '" class="actions_button">');
+	});
+}
+
+function cancelFriendRequest(element, userId)
+{	
+	var data = {"to":userId, "_csrf":[[${_csrf.token}]]};	
+	var text = [[#{profile_add_friends}]];	
+	$.post("/profile/cancelfrequest", data, function(){				
+		element.replaceWith('<input type="button" id="add_to_friends" data-user-id="' + userId +'" value="'+ text + '" class="actions_button"/>');
+	
+		$("#accept_friend_request").remove();
+	});
+	
+}
+
+function deleteFromFriends(element, userId)
+{
+	var data = {"friend":userId,"_csrf":[[${_csrf.token}]]};	
+	var text = [[#{profile_add_friends}]];	
+	$.post("/profile/deletefriend", data, function(){			
+		element.replaceWith('<input type="button" id="add_to_friends" data-user-id="' + userId +'" value="'+ text + '" class="actions_button"/>');
+	});
+}
+
+function acceptFriendRequest(element, userId)
+{
+	var data = {"from":userId,"_csrf":[[${_csrf.token}]]};	
+	var text = [[#{profile_delete_from_friends}]];	
+	$.post("/profile/acceptfrequest", data, function(){			
+		element.replaceWith('<input type="button" id="delete_from_friends" data-user-id="'+ userId + '" value="' + text + '" class="actions_button">');
+		$("#cancel_friend_request").remove();
+	});
+}
+
+function blockUser(element, userId)
+{
+	var data = {"id":userId,"_csrf":[[${_csrf.token}]]};	
+	var text = [[#{profile_unblock_user}]];	
+	$.post("/profile/blockuser", data, function(){			
+		element.replaceWith('<input type="button" id="unblock_user" data-user-id="'+ userId + '" value="' + text + '" class="actions_button">');
+		
+	});
+}
+
+function unblockUser(element, userId)
+{
+	var data = {"id":userId,"_csrf":[[${_csrf.token}]]};	
+	var text = [[#{profile_block_user}]];	
+	$.post("/profile/unblockuser", data, function(){			
+		element.replaceWith('<input type="button" id="block_user" data-user-id="'+ userId + '" value="' + text + '" class="actions_button">');
+		
+	});
+}
+
+
+
+$(document).ready(function(){
+
+	// Переменная куда будут располагаться данные файлов
+	 
+	var files;
+	 
+	// Вешаем функцию на событие
+	// Получим данные файлов и добавим их в переменную
+	 
+	$('input[type=file]').change(function(){		
+	    files = this.files;
+	});
+	
+	$("#logout").on('click' ,function(event){
+		event.preventDefault();	
+		
+		$.post("/logout", {"_csrf":[[${_csrf.token}]]} , function(){
+			window.location.replace("/");			
+		})
+	});
+	
+	$("#actions").on('click', 'input[type="button"]', function(event){
+		
+		var element = $(this);
+		var buttonId = element.attr("id");
+		var userId = element.data("user-id");
+		
+		if(buttonId=="add_to_friends")
+			addToFriends(element, userId);
+		
+		if(buttonId=="cancel_friend_request")
+			cancelFriendRequest(element, userId);
+		
+		if(buttonId=="delete_from_friends")
+			deleteFromFriends(element, userId);
+		
+		if(buttonId=="accept_friend_request")
+			acceptFriendRequest(element, userId);
+		
+		if(buttonId=="block_user")
+			blockUser(element, userId);
+		
+		if(buttonId=="unblock_user")
+			unblockUser(element, userId);
+		
+	});
+		
+	
+	
+	$(".delete").on('click', function(event){
+		event.preventDefault();			
+		
+		var element = $(this);
+		var senderId = element.data("sender-id");
+		var msgId = element.data("message-id");	
+		
+		var msg = {"senderId":senderId, "messageId":msgId, "_csrf":[[${_csrf.token}]]};
+		
+		$.post('/profile/deletewallmessage', msg, function(){
+			
+			element.parent().remove();	
+			
+		});
+	
+	});
+	
+	$("#wall_form_message").on('submit', function(event){	
+		event.preventDefault();	
+		
+		if($("#text").val().length==0 && $("#image").size==0)
+			return;			
+		
+		var data = new FormData();
+	    $.each( files, function( key, value ){ // не понял этот момент
+	        data.append( key, value );
+	        
+	    });
+	    data.append("text", $("#text").val());
+	    data.append("receiver", $("#receiver").val());
+	    data.append("_csrf" , [[${_csrf.token}]]);
+	    
+	    
+	    $.ajax({
+	        url: '/profile/postwallmessage',
+	        type: 'POST',
+	        data: data,
+	        cache: false,
+	        dataType: 'json',
+	        processData: false, // Не обрабатываем файлы (Don't process the files)
+	        contentType: false, // Так jQuery скажет серверу что это строковой запрос
+	        success: function( msg, textStatus, jqXHR ){
+	 
+	            // Если все ОК
+	 
+	            if( typeof msg.error === 'undefined' ){
+	                // Файлы успешно загружены, делаем что нибудь здесь
+	 
+	                // выведем пути к загруженным файлам в блок '.ajax-respond'	                
+	                
+	                let formatter = new Intl.DateTimeFormat();
+	 
+	            	var response = 
+	        			'<div class="wall_item">'   
+	                       + '<p><a href="/profile/'+ msg.senderId +'" class="author">' + msg.senderName + '</a> <span class="wall_item_date">' +  msg.dt + '</span></p>'              
+	                       + '<p class="wall_item_text">'+ msg.text + '</p>'
+	                       + '<img th:src="@{\'/uploads/\'' + msg.imagePath + '}"/>'
+	                       + '<a th:href="@{?del_wall_message=' + msg.id + '}" class="delete" th:text="#{profile_delete_message}">delete this message</a>'                                         
+	                    +'</div>'; 
+	        			
+	        			$("#wall_form").after(response);
+	        			
+	        			$("#text").val('');
+	        			$("#image").val('');
+	        			
+	        			
+	            }
+	            else{
+	                console.log('ОШИБКИ ОТВЕТА сервера: ' + respond.error );
+	            }
+	        },
+	        error: function( jqXHR, textStatus, errorThrown ){
+	            console.log('ОШИБКИ AJAX запроса: ' + textStatus );
+	        }
+	    });
+			
+	});
+	
+	
+});
+</script>
+
+
+</head>
+
+<body>
+    <header>
+        <div id="notice">
+            <a th:href="@{/offer}" th:text="#{offer}"></a>            
+        </div>
+        <h1><a th:href="@{/}">Social Network (pet-project)</a></h1>
+        <div id="search_box">
+            <a href="?lang=ru" th:unless="${#locale.getLanguage().equals('ru')}">RU</a>
+            <a href="?lang=ru" class="active_lang" th:if="${#locale.getLanguage().equals('ru')}">RU</a> 
+            
+            <a href="?lang=en" th:unless="${#locale.getLanguage().equals('en')}">EN</a>
+            <a href="?lang=en" class="active_lang" th:if="${#locale.getLanguage().equals('en')}">EN</a>
+            
+            <form>
+                <input type="search" id="search_text" th:placeholder="#{search_placeholder}" required/>
+                <input type="submit" id="search_button" th:value="#{search_start}">
+            </form>
+        </div>
+    </header>
+    <main>
+        <div id="left_bar">
+            <ul>
+                <li><a th:href="@{/profile}" th:text="#{profile_menu_mypage}">My page</a></li>
+                <li><a th:href="@{/news}" th:text="#{profile_menu_news}">News</a></li>
+                <li><a th:href="@{/friends}" th:text="#{profile_menu_friends}">Friends</a></li>
+                <li><a th:href="@{/messages}" th:text="#{profile_menu_messages}">Messages</a></li>
+                <li><a th:href="@{/channels}" th:text="#{profile_menu_channels}">Channels</a></li>                
+                <li><a th:href="@{/photos}" th:text="#{profile_menu_photos}">My photos</a></li>               
+                <li><a th:href="@{/settings}" th:text="#{profile_menu_settings}">Settings</a></li>
+                <li id="exit_item"><a href="/logout" id="logout" th:text="#{profile_menu_exit}">Exit</a></li>
+            </ul>
+        </div>
+        <div id="content"> 
+            <div id="photo_info">
+                <div id="photo">
+                    <a th:href="@{'/uploads/' + ${profile.imagePath}}" data-lightbox="main-photo">
+                    	<img th:src="@{'/uploads/' + ${profile.imagePath}}"/>
+                    </a>
+                </div>
+                <div id="info">
+                    <h2 th:text="${profile.name} + ' ' + ${profile.surname}">Ivan Ivanov</h2>
+                    <p th:text="${{profile.birthDate}}" th:if="${profile.birthDate!=null}">28 y.o.</p>
+                    <p th:text="#{${profile.maritalStatus}}" th:if="${profile.maritalStatus!=null}">Married</p>
+                    <p th:text="${profile.phone}" th:if="${profile.phone!=null}">+7 900 123 56 78</p>
+                    <p th:text="${profile.city} + ', ' + ${profile.country}">Perm, Russia</p>                    
+                    <p th:text="${profile.about}" th:if="${profile.about!=null}">Working in Gazprom</p>                    
+                   
+                    <div id="actions">                        	  
+                    	<input type="button"  th:if="${profile.id!=authenticated}" th:value="#{profile_send_message}" class="actions_button"/> 
+                        <input type="button" th:if="${(profile.id!=authenticated)&&!fRequestExists&&!isFriend}" id="add_to_friends" th:data-user-id="${profile.id}" th:value="#{profile_add_friends}" class="actions_button"/> 
+                    	
+                    	<input type="button" th:if="${fRequestExists&&(to==authenticated)}" id="accept_friend_request" th:data-user-id="${profile.id}" th:value="#{profile_accept_friend_request}" class="actions_button">
+                    	<input type="button" th:if="${fRequestExists&&(from==authenticated)}" id="cancel_friend_request" th:data-user-id="${profile.id}" th:value="#{profile_cancel_friend_request}" class="actions_button">
+                    	<input type="button" th:if="${fRequestExists&&(to==authenticated)}" id="cancel_friend_request" th:data-user-id="${profile.id}" th:value="#{profile_reject_friend_request}" class="actions_button">                    	
+                    	<input type="button" th:if="${isFriend}" id="delete_from_friends" th:data-user-id="${profile.id}" th:value="#{profile_delete_from_friends}" class="actions_button">  
+                    
+                    	<input type="button"  th:if="${profile.id!=authenticated}" id="block_user" th:value="#{profile_block_user}" th:data-user-id="${profile.id}" class="actions_button"/>
+                    
+                    </div>
+                </div>
+            </div>            
+
+            <div id="myphotos">
+                <p class="dirtitle" th:text="#{profile_photos}">My photos</p>
+                <div id="myphotos_container">
+                    <div class="myphoto"><a th:href="@{/profile.jpeg}" data-lightbox="gallery"><img th:src="@{/profile.jpeg}"></a></div>
+                    <div class="myphoto"><a th:href="@{/profile.jpeg}" data-lightbox="gallery"><img th:src="@{/profile.jpeg}"></a></div>
+                    <div class="myphoto"><a th:href="@{/profile.jpeg}" data-lightbox="gallery"><img th:src="@{/profile.jpeg}"></a></div>
+                    <div class="myphoto"><a th:href="@{/profile.jpeg}" data-lightbox="gallery"><img th:src="@{/profile.jpeg}"></a></div>                                 
+                </div>
+                <p class="see_all"><a href="" th:text="#{profile_see_all}">See all</a></p>
+            </div>  
+            <div id="wall">
+                <p class="dirtitle" th:text="#{profile_wall}">My wall</p>
+                <div id="wall_form">  
+                    <form id="wall_form_message" enctype="multipart/form-data" method="post" th:object="${message}">
+                        <textarea maxlength="200" rows="3"  th:field="*{text}"></textarea>
+                        <input type="file"  accept="image/*" th:field="*{image}"/>
+                        <input type="hidden" th:field="*{receiver}"/>
+                        <input type="submit" th:value="#{profile_wall_send}" id="wall_input_send"/>
+                    </form>
+                </div>
+                
+                <div class="wall_item" th:each="message : ${wallMessages}">     
+                    <p><a th:href="@{'/profile/' + ${message.senderId}}" class="author" th:text="${message.senderName}">Mike Tyson</a> <span class="wall_item_date" th:text="${message.dt}"> 16:01 25.07.2024</span></p>              
+                    <p class="wall_item_text" th:text="${message.text}">Some text</p>                    
+                    <a th:href="@{'?del_wall_message=' + ${message.id}}" th:data-message-id="${message.id}" th:data-sender-id="${message.senderId}" class="delete" th:text="#{profile_delete_message}">delete this message</a>                                        
+                </div>
+                               
+
+            </div>
+        </div>
+    </main>
+    <footer>        
+        <ul>
+            <li><a th:href="@{/about}" th:text="#{profile_footer_about}">About</a></li>
+            <li><a th:href="@{/github}" th:text="#{profile_footer_github}">Github</a></li>
+            <li><a th:href="@{/projects}" th:text="#{profile_footer_projects}">Other projects</a></li>
+            <li><a th:href="@{/contacts}" th:text="#{profile_footer_contacts}">Contacts</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
+

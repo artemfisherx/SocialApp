@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title th:text="#{register_step1}">Register. Step 1</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+
+</head>
+
+
+<body>
+    <header>
+        <div id="notice">
+            <a th:href="@{/offer}" th:text="#{offer}">I'm looking for a job. Do you have a offer? If you see this, then it's still relevant.</a>
+        </div>
+        <h1><a th:href="@{/}">Social Network (pet-project)</a></h1>
+        <div id="search_box">
+            <a href="?lang=ru" th:unless="${#locale.getLanguage().equals('ru')}">RU</a>
+            <a href="?lang=ru" class="active_lang" th:if="${#locale.getLanguage().equals('ru')}">RU</a>   
+            
+            <a href="?lang=en" th:unless="${#locale.getLanguage().equals('en')}">EN</a>
+            <a href="?lang=en" class="active_lang" th:if="${#locale.getLanguage().equals('en')}">EN</a>
+        </div>
+    </header>
+    <main class="login_main">
+        <div id="content" class="login_content">
+            <div id="reg_form">
+            	<h2 th:text="#{register_title}">Registration</h2>
+                <form method="post" th:action="@{/reg/register1}" th:object="${regForm}">                 	
+                               
+                    <label th:text="#{register_login}">Login</label>
+                    <input type="text" th:field="*{login}" required maxlength="20" autocomplete="on"/>
+                    <p th:if="${#fields.hasErrors('login')}" th:errors="*{login}" class="register_input_error"/>
+                    
+                    <label th:text="#{register_password}">Password</label>
+                    <input type="password" th:field="*{password}" required maxlength="20"/>
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="register_input_error"/>
+
+                    <label th:text="#{register_name}">Name</label>
+                    <input type="text" th:field="*{name}" required maxlength="20"/>
+                    <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="register_input_error"/>
+
+                    <label th:text="#{register_surname}">Surname</label>
+                    <input type="text" th:field="*{surname}" required maxlength="20"/>
+                    <p th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="register_input_error"/>
+
+                    <label th:text="#{register_birth_date}">Birth date</label>
+                    <input type="date" th:field="*{birthDate}" required maxlength="20"/>
+                    <p th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="register_input_error"/>
+
+                    <label th:text="#{register_marital}">Marital status</label>
+                    <label th:text="#{register_married}" class="inline-block">Married</label><input type="radio" th:field="*{maritalStatus}" required value="Married"/>
+                    <label th:text="#{register_not_married}" class="inline-block">Not married</label><input type="radio" th:field="*{maritalStatus}" required value="Not_Married"/> 
+                    <p th:if="${#fields.hasErrors('maritalStatus')}" th:errors="*{maritalStatus}" class="register_input_error"/>               
+                    
+                    <input type="submit" name="go" th:value="#{register_next}" class="actions_button"/>
+                </form>   
+            </div> 
+                
+        </div>
+    </main>
+    <footer>        
+        <ul>
+            <li><a th:href="@{/about}" th:text="#{profile_footer_about}">About</a></li>
+            <li><a th:href="@{/github}" th:text="#{profile_footer_github}">Github</a></li>
+            <li><a th:href="@{/projects}" th:text="#{profile_footer_projects}">Other projects</a></li>
+            <li><a th:href="@{/contacts}" th:text="#{profile_footer_contacts}">Contacts</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
+

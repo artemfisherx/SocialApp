@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru" th:fragment="typical(title, content, script)">
+<head>
+<meta charset="utf-8">
+<title th:replace="${title}">Title</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+
+<script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+<link th:href="@{/lightbox/css/lightbox.css}" rel="stylesheet"/>
+<script th:src="@{/lightbox/js/lightbox.js}"></script>
+<script th:inline="javascript">
+$(document).ready(function(){
+	$("#logout").on('click' ,function(event){
+		event.preventDefault();	
+		
+		$.post("/logout", {"_csrf":[[${_csrf.token}]]} , function(){
+			window.location.replace("/");			
+		})
+	});
+});
+</script>
+
+<script th:replace="${script}">
+</script>
+
+
+</head>
+
+<body>
+    <header>
+        <div id="notice">
+            <a th:href="@{/offer}" th:text="#{offer}"></a>            
+        </div>
+        <h1><a th:href="@{/}">Social Network (pet-project)</a></h1>
+        <div id="search_box">
+            <a href="?lang=ru" th:unless="${#locale.getLanguage().equals('ru')}">RU</a>
+            <a href="?lang=ru" class="active_lang" th:if="${#locale.getLanguage().equals('ru')}">RU</a> 
+            
+            <a href="?lang=en" th:unless="${#locale.getLanguage().equals('en')}">EN</a>
+            <a href="?lang=en" class="active_lang" th:if="${#locale.getLanguage().equals('en')}">EN</a>
+            
+            <form>
+                <input type="search" id="search_text" th:placeholder="#{search_placeholder}" required/>
+                <input type="submit" id="search_button" th:value="#{search_start}">
+            </form>
+        </div>
+    </header>
+    <main>
+        <div id="left_bar">
+            <ul>
+                <li><a th:href="@{'/profile/'}" th:text="#{profile_menu_mypage}">My page</a></li>
+                <li><a th:href="@{/news}" th:text="#{profile_menu_news}">News</a></li>
+                <li><a th:href="@{/friends}" th:text="#{profile_menu_friends}">Friends</a></li>
+                <li><a th:href="@{/messages}" th:text="#{profile_menu_messages}">Messages</a></li>
+                <li><a th:href="@{/channels}" th:text="#{profile_menu_channels}">Channels</a></li>                
+                <li><a th:href="@{/photos}" th:text="#{profile_menu_photos}">My photos</a></li>               
+                <li><a th:href="@{/settings}" th:text="#{profile_menu_settings}">Settings</a></li>
+                 <li id="exit_item"><a href="/logout" id="logout" th:text="#{profile_menu_exit}">Exit</a></li>
+            </ul>
+        </div>
+        <div id="content" th:insert="${content}">
+            
+        </div>
+    </main>
+    <footer>        
+        <ul>
+            <li><a th:href="@{/about}" th:text="#{profile_footer_about}">About</a></li>
+            <li><a th:href="@{/github}" th:text="#{profile_footer_github}">Github</a></li>
+            <li><a th:href="@{/projects}" th:text="#{profile_footer_projects}">Other projects</a></li>
+            <li><a th:href="@{/contacts}" th:text="#{profile_footer_contacts}">Contacts</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
+

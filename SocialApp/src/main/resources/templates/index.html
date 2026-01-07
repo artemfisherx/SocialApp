@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Login</title>
+
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}"/>
+
+<script type="text/javascript" th:src="@{/mywebauthn.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+<!--
+	document.addEventListener("DOMContentLoaded",() => setupLogin({"X-CSRF-TOKEN" : [[${_csrf.token}]]}, "", document.getElementById('passkey-signin')));
+
+//-->
+</script>
+
+</head>
+
+
+<body>
+    <header>
+        <div id="notice">
+            <a href="">I'm looking for a job. Do you have a offer? If you see this, then it's still relevant.</a>
+        </div>
+        <h1><a th:href="@{/}">Social Network (pet-project)</a></h1>
+        <div id="search_box">
+            <a href="?lang=ru" th:unless="${#locale.getLanguage().equals('ru')}">RU</a>
+            <a href="?lang=ru" class="active_lang" th:if="${#locale.getLanguage().equals('ru')}">RU</a>   
+            
+            <a href="?lang=en" th:unless="${#locale.getLanguage().equals('en')}">EN</a>
+            <a href="?lang=en" class="active_lang" th:if="${#locale.getLanguage().equals('en')}">EN</a>
+        </div>
+    </header>
+    <main class="login_main">
+        <div id="content" class="login_content">
+            <div id="possibilities">
+                <h2>Possibilities</h2>
+                <ul>
+                    <li>Find your friends</li>
+                    <li>Share your photos</li>
+                    <li>Listen music</li>
+                    <li>Add and watch videos</li>
+                </ul>
+            </div>
+            <div id="auth_form">
+            
+            <p th:if="${param.error}" th:text="#{index_error}" class="error">Invalid username and password.</p>			
+			
+                <form method="post" th:action="@{/login}">                
+                    <label th:text="#{index_login}">Login</label>
+                    <input type="text" name="username" required maxlength="20"/>
+                    
+                    <label th:text="#{index_password}">Password</label>
+                    <input type="password" name="password" required maxlength="20"/>  
+                    
+                    <label th:text="#{index_remember_me}">Remember me</label>
+                    <input type='checkbox' name='remember-me'/>
+                    
+                    <input type="submit" name="go" th:value="#{index_in}" class="actions_button"/>
+                </form>  
+                
+                <button id="passkey-signin" type="submit" class="actions_button" th:text="#{index_in_passkey}">Sign in with a passkey</button> 
+                
+                <form method="post" th:action="@{/reg/temp}">
+                	<input type="submit" class="actions_button" th:value="#{index_in_onetime}"/>
+                </form>
+                                
+                <a th:href="@{/reg/register1}" class="index_reg" th:text="#{index_reg}"></a>  
+            </div>                       
+        </div>
+    </main>
+    <footer>        
+        <ul>
+            <li><a href="">About</a></li>
+            <li><a href="">Github</a></li>
+            <li><a href="">Other projects</a></li>
+            <li><a href="">Contacts</a></li>
+        </ul>
+    </footer>
+
+</body>
+
+</html>
+

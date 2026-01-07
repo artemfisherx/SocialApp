@@ -1,0 +1,19 @@
+		<title th:text="#{channels_title}"></title>
+        
+        
+        <div id="content" class="pattern_padding" th:replace="~{typical::typical(~{::title}, ~{::section}, _)}"> 
+        <section>
+        	<a th:href="@{/channels/create}" th:text="#{channels_create}">Create channel</a>
+        	
+        	<p th:text="#{channels_yours}" th:if="${channelsOfUser.size()>0}"></p>
+        	<ul th:each="channel : ${channelsOfUser}">
+        		<li><a th:href="@{'/channels/' + ${channel.id}}" th:text="${channel.title}"></a></li>
+        	</ul>
+        	
+        	<p th:text="#{channels_not_yours}" th:if="${channelsOfNotUser.size()>0}"></p>
+        	<ul th:each="channel : ${channelsOfNotUser}">
+        		<li><a th:href="@{'/channels/' + ${channel.id}}" th:text="${channel.title}"></a></li>
+        	</ul>
+        	
+      </section>
+      </div>
